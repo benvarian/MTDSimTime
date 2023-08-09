@@ -13,7 +13,16 @@ A time-based simulator used for evaluating Moving Target Defence (MTD) technique
    - This will start a local server on port 8000
    - [page](http://localhost:8000/)
 
-## Getting Started:
+# Simulation
+
+1. Installing [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
+2. - `conda env create -f simulation.environment.yml`
+3. Activating the environment
+   - `conda activate mtdsimtime`
+4. Start Jupyter Notebook
+   - `jupyter notebook`
+
+## Getting Started (Old and only supported on Windows):
 
 1. Installing [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
 2. Creating conda environment
