@@ -15,11 +15,21 @@ A time-based simulator used for evaluating Moving Target Defence (MTD) technique
 
 # Simulation
 
+1. Create python virtual environment by running
+   - `python3 -m venv venv`
+2. Activate python virtual environment
+   - This is different depending if you are on Mac or Windows
+3. Install dependencies
+   - `pip install -r requirements.txt`
+4. Run `simulate.py`, this should create new directories where images from the simulation are stored
+
+To run simulation in a jupyter notebook
+
 1. Installing [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
-2. - `conda env create -f simulation.environment.yml`
-3. Activating the environment
+   - `conda env create -f simulation.environment.yml`
+2. Activating the environment
    - `conda activate mtdsimtime`
-4. Start Jupyter Notebook
+3. Start Jupyter Notebook
    - `jupyter notebook`
 
 ## Getting Started (Old and only supported on Windows):
