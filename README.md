@@ -2,6 +2,16 @@
 
 A time-based simulator used for evaluating Moving Target Defence (MTD) techniques.
 
+## Viewing Documentation 
+1. Install [mkdocs](https://www.mkdocs.org/getting-started/)
+   - ``pip3 install mkdocs``
+2. Navigate to Documentation folder
+   - ``cd Documentation``
+3. Run mkdocs
+   - ``mkdocs serve``
+   - This will start a local server on port 8000
+   - [page](http://localhost:8000/)
+
 ## Getting Started:
 
 1. Installing [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
