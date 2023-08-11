@@ -1,5 +1,5 @@
 run:
-	cd app && python3 app.py
+	python3 app.py
 
 docs:
 	cd Documentation && mkdocs serve
