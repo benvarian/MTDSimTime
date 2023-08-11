@@ -1,1 +1,1 @@
-alert("script has bee loaded!")
+console.log("script has bee loaded!");
