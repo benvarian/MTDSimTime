@@ -2,6 +2,15 @@
 
 A time-based simulator used for evaluating Moving Target Defence (MTD) techniques.
 
+## How to run (linux + mac)
+1. `make setup-mac`
+2. for now, in two seperate terminal commands run
+   - `make run`
+   - `make docs`
+
+## How to run (windows)
+coming...
+
 ## Viewing Documentation
 
 1. Install [mkdocs](https://www.mkdocs.org/getting-started/)
