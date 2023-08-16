@@ -8,4 +8,20 @@
   <div class="bg-slate-300">
     <p class="font-bold underline">hello this is body</p>
   </div>
+
+{% block form_content %}
+<form class="simulation-form">
+  Network size list: <input type="text" name="network_size_list"><br>
+  Start time: <input type="text" name="start_time"><br>
+  Finish time: <input type="text" name="finish_time"><br>
+  MTD Interval: <input type="text" name="mtd_interval"><br>
+  Scheme: <input type="text" name="scheme"><br>
+  Total nodes: <input type="text" name="total_nodes"><br>
+  <button id="startSimulation">Start Simulation</button>
+</form>
+
+<h3>Network Plot:</h3>
+<img id="networkPlot" src="" alt="Network Plot" style="display:none;">
+{% endblock %}
+
 {% endblock %}

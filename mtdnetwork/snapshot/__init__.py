@@ -1,6 +1,7 @@
 import os
 
-current_directory = os.getcwd()
+# Get the current directory where the script is run from
+current_directory = os.path.dirname(os.path.abspath(__file__))
 
 
 class Snapshot:
@@ -10,4 +11,4 @@ class Snapshot:
 
     @staticmethod
     def get_file_by_suffix(file_name: str, suffix: str):
-        return current_directory + '/snapshots/' + file_name + '_' + suffix + '.pkl'
+        return os.path.join(current_directory + '/snapshots', f'{file_name}_{suffix}.pkl')

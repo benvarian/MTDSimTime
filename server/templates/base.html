@@ -12,7 +12,12 @@
 
     {% block body %}
 
+    {% block form_content %}
+
+    {% endblock %}
+
     {% endblock %}
   </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="{{ url_for('static', filename = '/scripts/index.js') }}"></script>
 </html>
