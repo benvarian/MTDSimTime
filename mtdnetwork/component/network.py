@@ -44,46 +44,52 @@ class Network:
             seed:
                 the seed for the random number generator if one needs to be set
         """
-        self.graph: nx.Graph = None
-        self.colour_map = None
-        self.users_per_host = None
-        self.total_users = None
-        self.users_list = None
-        self.pos = None
         if seed is not None:
             random.seed(seed)
-        self.total_nodes = total_nodes
-        self.total_endpoints = total_endpoints
-        self.total_subnets = total_subnets
-        self.layers = total_layers
-        self.exposed_endpoints = [n for n in range(total_endpoints)]
 
-        self.total_database = total_database
-        self._database = [n for n in range(total_nodes - total_database, total_nodes)]
+        self.graph: nx.Graph = None
+        self.colour_map: list = None
+        self.users_per_host: int = None
+        self.total_users: int = None
+        self.users_list: list = None
+        self.pos: dict = None
 
-        self.tags = []
-        self.tag_priority = []
-        self.service_generator = services.ServicesGenerator()
-        self.nodes = [n for n in range(total_nodes)]
-        self.mtd_strategies = []
+        self.total_nodes: int = total_nodes
+        self.total_endpoints: int = total_endpoints
+        self.total_subnets: int = total_subnets
+        self.layers: int = total_layers
+        self.exposed_endpoints: list = [n for n in range(total_endpoints)]
 
-        self.reachable = []
-        self.compromised_hosts = []
-        self.node_per_layer = []
+        self.total_database: int = total_database
+        self._database: list = [
+            n for n in range(total_nodes - total_database, total_nodes)
+        ]
+
+        self.tags: list = []
+        self.tag_priority: list = []
+        self.service_generator: services.ServicesGenerator = (
+            services.ServicesGenerator()
+        )
+        self.nodes: list = [n for n in range(total_nodes)]
+        self.mtd_strategies: list = []
+
+        self.reachable: list = []
+        self.compromised_hosts: list = []
+        self.node_per_layer: list = []
         # Network type 0 is a targetted attack, Network type 1 is a general attack (no target node)
-        self.network_type = 1
-        self.vuln_dict = {}
-        self.vuln_count = {}
-        self.service_dict = {}
-        self.service_count = {}
-        self.total_vulns = 0
-        self.total_services = 0
-        self.scorer = Scorer()
-        self.users_to_nodes_ratio = users_to_nodes_ratio
-        self.prob_user_reuse_pass = prob_user_reuse_pass
+        self.network_type: int = 1
+        self.vuln_dict: dict = {}
+        self.vuln_count: dict = {}
+        self.service_dict: dict = {}
+        self.service_count: dict = {}
+        self.total_vulns: int = 0
+        self.total_services: int = 0
+        self.scorer: Scorer = Scorer()
+        self.users_to_nodes_ratio: int = users_to_nodes_ratio
+        self.prob_user_reuse_pass: int = prob_user_reuse_pass
 
-        self.target_node = None
-        self.target_layer = target_layer
+        self.target_node: int = None
+        self.target_layer: int = target_layer
 
     def init_network(self):
         self.assign_tags()
@@ -346,7 +352,7 @@ class Network:
     def get_layers(self):
         return dict(nx.get_node_attributes(self.graph, "layer"))
 
-    def get_graph(self):
+    def get_graph(self) -> nx.Graph:
         return self.graph
 
     def get_graph_copy(self):
