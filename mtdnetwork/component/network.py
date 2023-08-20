@@ -11,10 +11,18 @@ import os
 
 
 class Network:
-
-    def __init__(self, total_nodes:int, total_endpoints:int, total_subnets:int, total_layers:int, total_database:int, target_layer=None,
-                 users_to_nodes_ratio:float=constants.USER_TO_NODES_RATIO,
-                 prob_user_reuse_pass:float=constants.USER_PROB_TO_REUSE_PASS, seed:int=None):
+    def __init__(
+        self,
+        total_nodes: int,
+        total_endpoints: int,
+        total_subnets: int,
+        total_layers: int,
+        total_database: int,
+        target_layer=None,
+        users_to_nodes_ratio: float = constants.USER_TO_NODES_RATIO,
+        prob_user_reuse_pass: float = constants.USER_PROB_TO_REUSE_PASS,
+        seed: int = None,
+    ):
         """
         Initialises the state of the network for the simulation.
 
@@ -36,7 +44,7 @@ class Network:
             seed:
                 the seed for the random number generator if one needs to be set
         """
-        self.graph:nx.Graph = None
+        self.graph: nx.Graph = None
         self.colour_map = None
         self.users_per_host = None
         self.total_users = None
@@ -80,21 +88,30 @@ class Network:
     def init_network(self):
         self.assign_tags()
         self.assign_tag_priority()
-        self.setup_users(self.users_to_nodes_ratio, self.prob_user_reuse_pass, constants.USER_TOTAL_FOR_EACH_HOST)
+        self.setup_users(
+            self.users_to_nodes_ratio,
+            self.prob_user_reuse_pass,
+            constants.USER_TOTAL_FOR_EACH_HOST,
+        )
         self.gen_graph()
         self.setup_network()
         self.scorer.set_initial_statistics(self)
 
     def update_host_information(self):
-        """"
+        """ "
         Updates the host
         """
         for host_id in self.nodes:
             host = self.get_host(host_id)
             host.swap_network(self)
 
-    def gen_graph(self, min_nodes_per_subnet=2, max_subnets_per_layer=5, subnet_m_ratio=0.2,
-                  prob_inter_layer_edge=0.4):
+    def gen_graph(
+        self,
+        min_nodes_per_subnet=2,
+        max_subnets_per_layer=5,
+        subnet_m_ratio=0.2,
+        prob_inter_layer_edge=0.4,
+    ):
         """
         Generates a network of subnets using the Barabasi-Albert Random Graph model.
 
@@ -113,10 +130,13 @@ class Network:
         subnets_per_layer = []
         while len(subnets_per_layer) < self.layers:
             # Adds 1 to start of array if array is empty
-            if len(subnets_per_layer) == 0: subnets_per_layer.append(1)
+            if len(subnets_per_layer) == 0:
+                subnets_per_layer.append(1)
             l_subnets = random.randint(1, max_subnets_per_layer)
             # Only appends value if it doesn't exceed maximum number of subnets possible
-            if self.total_subnets - (sum(subnets_per_layer) + l_subnets) > self.layers - len(subnets_per_layer):
+            if self.total_subnets - (
+                sum(subnets_per_layer) + l_subnets
+            ) > self.layers - len(subnets_per_layer):
                 subnets_per_layer.append(l_subnets)
 
         # Randomly adds one to random subnets until there is the correct amount of subnets (Could be Optimised in
@@ -170,7 +190,9 @@ class Network:
                 subgraph = nx.barabasi_albert_graph(s_nodes, m)
                 new_node_mapping = {k: k + node_id for k in range(s_nodes)}
                 subgraph = nx.relabel_nodes(subgraph, new_node_mapping)
-                new_attr = {k + node_id: {"subnet": j, "layer": i} for k in range(s_nodes)}
+                new_attr = {
+                    k + node_id: {"subnet": j, "layer": i} for k in range(s_nodes)
+                }
                 attr = {**attr, **new_attr}
 
                 # Setting offset to next empty node
@@ -180,29 +202,41 @@ class Network:
                 if i != 0:
                     subgraph_pos = {
                         k: np.array(
-                            [v[0] + i * 2.25, v[1] + j * 3 + 1.5 * (max_subnet_in_layer - len(subnet_node_list))])
+                            [
+                                v[0] + i * 2.25,
+                                v[1]
+                                + j * 3
+                                + 1.5 * (max_subnet_in_layer - len(subnet_node_list)),
+                            ]
+                        )
                         for k, v in subgraph_pos.items()
                     }
 
                     for k, v in subgraph_pos.items():
-                        y = v[1] + j * 3 + 1.5 * (max_subnet_in_layer - len(subnet_node_list))
-                        subgraph_pos[k] = np.array(
-                            [v[0] + i * 2.25, y]
+                        y = (
+                            v[1]
+                            + j * 3
+                            + 1.5 * (max_subnet_in_layer - len(subnet_node_list))
                         )
+                        subgraph_pos[k] = np.array([v[0] + i * 2.25, y])
                         if y < min_y_pos:
                             min_y_pos = y
                         if y > max_y_pos:
                             max_y_pos = y
                 else:
                     subgraph_pos = {
-                        k: np.array([0, k])
-                        for k, _v in subgraph_pos.items()
+                        k: np.array([0, k]) for k, _v in subgraph_pos.items()
                     }
                 # Stores all the positions of items from subgraphs
                 self.pos = {**self.pos, **subgraph_pos}
 
                 # Selects Target Host
-                if i == self.target_layer and j == 1 and self.network_type == 0 and self.target_node != -1:
+                if (
+                    i == self.target_layer
+                    and j == 1
+                    and self.network_type == 0
+                    and self.target_node != -1
+                ):
                     self.target_node = node_id - random.randrange(0, s_nodes)
                     print("Target Node is: ", self.target_node)
 
@@ -235,8 +269,11 @@ class Network:
                 if not nx.is_connected(self.graph.subgraph(node_a + node_b)):
                     n_b = random.choices(node_b, weights=degree_node_b, k=1)[0]
                     self.graph.add_edge(n_a1, n_b)
-                if random.random() < prob_inter_layer_edge and subnets_per_layer[i] > 1 and not nx.is_connected(
-                        self.graph.subgraph(node_a)):
+                if (
+                    random.random() < prob_inter_layer_edge
+                    and subnets_per_layer[i] > 1
+                    and not nx.is_connected(self.graph.subgraph(node_a))
+                ):
                     n_a2 = get_other_node(node_a, degree_node_a, n_a1)
                     self.graph.add_edge(n_a1, n_a2)
 
@@ -269,7 +306,9 @@ class Network:
 
         # Fix positions for endpoints
         for n in range(self.total_endpoints):
-            position = (n + 1) / self.total_endpoints * (max_y_pos - min_y_pos) + min_y_pos
+            position = (n + 1) / self.total_endpoints * (
+                max_y_pos - min_y_pos
+            ) + min_y_pos
             new_pos = {n: np.array([0, position])}
             self.pos.update(new_pos)
 
@@ -337,7 +376,9 @@ class Network:
             if not layer_id in layer_subnets:
                 layer_subnets[layer_id] = {}
 
-            layer_subnets[layer_id][subnet_id] = layer_subnets[layer_id].get(subnet_id, []) + [host_id]
+            layer_subnets[layer_id][subnet_id] = layer_subnets[layer_id].get(
+                subnet_id, []
+            ) + [host_id]
 
         return layer_subnets
 
@@ -399,7 +440,9 @@ class Network:
             if total_host_vulns - not_unique_host_vulns == 0:
                 new_vuln_percent = 0
             else:
-                new_vuln_percent = (total_host_vulns - not_unique_host_vulns) / total_host_vulns
+                new_vuln_percent = (
+                    total_host_vulns - not_unique_host_vulns
+                ) / total_host_vulns
             total_score = total_score + new_vuln_percent
         if len(shortest_path) > 0:
             return total_score / len(shortest_path)
@@ -423,12 +466,16 @@ class Network:
         if self.total_users < 1:
             self.total_users = 1
 
-        names = [x.decode() for x in pkg_resources.resource_string('mtdnetwork', "data/first-names.txt").splitlines()]
+        names = [
+            x.decode()
+            for x in pkg_resources.resource_string(
+                "mtdnetwork", "data/first-names.txt"
+            ).splitlines()
+        ]
 
         random_users = random.choices(names, k=self.total_users)
         self.users_list = [
-            (user, random.random() < prob_user_reuse_pass)
-            for user in random_users
+            (user, random.random() < prob_user_reuse_pass) for user in random_users
         ]
 
         self.users_per_host = users_per_host
@@ -589,7 +636,9 @@ class Network:
 
         return shortest_path, shortest_distance
 
-    def get_shortest_distance_from_exposed_or_pivot(self, host_id, pivot_host_id=-1, graph=None):
+    def get_shortest_distance_from_exposed_or_pivot(
+        self, host_id, pivot_host_id=-1, graph=None
+    ):
         if host_id in self.exposed_endpoints:
             return 0
         if graph is None:
@@ -607,7 +656,9 @@ class Network:
 
         return shortest_distance
 
-    def sort_by_distance_from_exposed_and_pivot_host(self, host_stack, compromised_hosts, pivot_host_id=-1):
+    def sort_by_distance_from_exposed_and_pivot_host(
+        self, host_stack, compromised_hosts, pivot_host_id=-1
+    ):
         """
         Sorts the Host Stack by the shortest number of hops to reach the target hosts.
 
@@ -624,23 +675,16 @@ class Network:
         visible_network = self.get_hacker_visible_graph()
 
         non_exposed_endpoints = [
-            host_id
-            for host_id in host_stack
-            if not host_id in self.exposed_endpoints
+            host_id for host_id in host_stack if not host_id in self.exposed_endpoints
         ]
 
         return sorted(
             non_exposed_endpoints,
             key=lambda host_id: self.get_shortest_distance_from_exposed_or_pivot(
-                host_id,
-                pivot_host_id=pivot_host_id,
-                graph=visible_network
-            ) + random.random()
-        ) + [
-                   host_id
-                   for host_id in self.exposed_endpoints
-                   if host_id in host_stack
-               ]
+                host_id, pivot_host_id=pivot_host_id, graph=visible_network
+            )
+            + random.random(),
+        ) + [host_id for host_id in self.exposed_endpoints if host_id in host_stack]
 
     def get_neighbors(self, host_id):
         """
@@ -673,7 +717,7 @@ class Network:
                 node_ip,
                 random.choices(self.users_list, k=self.users_per_host),
                 self,
-                self.service_generator
+                self.service_generator,
             )
 
     def get_hacker_visible_graph(self):
@@ -688,9 +732,7 @@ class Network:
         visible_hosts = visible_hosts + self.reachable
         visible_hosts = visible_hosts + self.exposed_endpoints
 
-        return self.graph.subgraph(
-            list(set(visible_hosts))
-        )
+        return self.graph.subgraph(list(set(visible_hosts)))
 
     def get_host(self, host_id):
         """
@@ -774,4 +816,4 @@ class Network:
         plt.figure(1, figsize=(15, 12))
         nx.draw(self.graph, pos=self.pos, node_color=self.colour_map, with_labels=True)
         directory = os.getcwd()
-        plt.savefig(directory + '/experimental_data/plots/network.png')
+        plt.savefig(directory + "/experimental_data/plots/network.png")
