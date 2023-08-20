@@ -12,9 +12,9 @@ import os
 
 class Network:
 
-    def __init__(self, total_nodes, total_endpoints, total_subnets, total_layers, total_database, target_layer=None,
-                 users_to_nodes_ratio=constants.USER_TO_NODES_RATIO,
-                 prob_user_reuse_pass=constants.USER_PROB_TO_REUSE_PASS, seed=None):
+    def __init__(self, total_nodes:int, total_endpoints:int, total_subnets:int, total_layers:int, total_database:int, target_layer=None,
+                 users_to_nodes_ratio:float=constants.USER_TO_NODES_RATIO,
+                 prob_user_reuse_pass:float=constants.USER_PROB_TO_REUSE_PASS, seed:int=None):
         """
         Initialises the state of the network for the simulation.
 
@@ -36,7 +36,7 @@ class Network:
             seed:
                 the seed for the random number generator if one needs to be set
         """
-        self.graph = None
+        self.graph:nx.Graph = None
         self.colour_map = None
         self.users_per_host = None
         self.total_users = None
